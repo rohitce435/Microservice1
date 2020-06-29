@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: user-service-deployment 
+spec: 
+  selector: 
+    matchLabels: 
+      app: user-app 
+  replicas: 1
+  template: 
+    metadata: 
+      labels: 
+        app: user-app
+    spec: 
+      containers: 
+      - name: user-app 
+        image: rohitce435/ms_repo1:us
+        ports: 
+        - containerPort: 8050
+        envFrom:
+         - configMapRef:
+            name: postgres-config
+        volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+--- 
+kind: Service 
+apiVersion: v1 
+metadata: 
+  name: user-service
+spec: 
+  selector: 
+    app: user-app
+  ports: 
+  - protocol: TCP 
+    port: 8050 
+    targetPort: 8050  

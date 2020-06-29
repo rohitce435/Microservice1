@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: aggregator-service-deployment 
+spec: 
+  selector: 
+    matchLabels: 
+      app: aggregator-app 
+  replicas: 1 
+  template: 
+    metadata: 
+      labels: 
+        app: aggregator-app
+    spec: 
+      containers: 
+      - name: aggregator-app 
+        image: rohitce435/ms_repo1:as
+        ports: 
+        - containerPort: 8070
+        env:
+         - name: USER_SERVICE_HOST
+           value: "user-service"
+         - name: ORDER_SERVICE_HOST
+           value: "order-service" 
+--- 
+kind: Service 
+apiVersion: v1 
+metadata: 
+  name: aggregator-service 
+spec: 
+  selector: 
+    app: aggregator-app 
+  ports: 
+  - protocol: TCP 
+    port: 8070 
+    targetPort: 8070 
+    nodePort: 31010
+  type: NodePort

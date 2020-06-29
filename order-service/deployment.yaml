@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata: 
+  name: order-app-deployment 
+spec: 
+  selector: 
+    matchLabels: 
+      app: order-app 
+  replicas: 1
+  template: 
+    metadata: 
+      labels: 
+        app: order-app
+    spec: 
+      containers: 
+      - name: order-app 
+        image: rohitce435/ms_repo1:os
+        ports: 
+        - containerPort: 8060
+--- 
+kind: Service 
+apiVersion: v1 
+metadata: 
+  name: order-service 
+spec: 
+  selector: 
+    app: order-app 
+  ports: 
+  - protocol: TCP 
+    port: 8060 
+    targetPort: 8060
